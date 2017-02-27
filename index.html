@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<title>Scratch ブロック on HTML</title>
+
+<script src="js/scratchblocks-v3.1-min.js"></script>
+<script src="js/translations-all-v3.1-min.js" charset="utf8"></script>
+<!-- <link rel=stylesheet href="style.css"> -->
+
+<h1>Scratch ブロック on HTML</h1>
+
+<code id="big_blocks">
+  @greenFlag がクリックされたとき
+  x座標を (0) 、y座標を (0) にする
+  ずっと
+    (10)回繰り返す
+      @turnright (10) 度回す
+      (5) 歩動かす
+    end
+    次のコスチュームにする
+  end
+</code>
+<code id="middle_blocks">
+  @greenFlag がクリックされたとき
+  x座標を (0) 、y座標を (0) にする
+  ずっと
+    (10)回繰り返す
+      @turnright (10) 度回す
+      (5) 歩動かす
+    end
+    次のコスチュームにする
+  end
+</code>
+<code id="small_blocks">
+  @greenFlag がクリックされたとき
+  x座標を (0) 、y座標を (0) にする
+  ずっと
+    (10)回繰り返す
+      @turnright (10) 度回す
+      (5) 歩動かす
+    end
+    次のコスチュームにする
+  end
+</code>
+
+<script>
+// ブロックの描画用関数
+var renderBlocks = function(target, script, scale) {
+  var doc = window.doc = scratchblocks.parse(script, {
+    //'ja'に翻訳されていないブロックがあれば'en'を参照する
+    languages: ['ja', 'en'],
+  });
+  doc.render(function(svg) {
+    target.innerHTML = "";
+    target.appendChild(svg);
+    //SVGの拡大処理
+    svg.setAttribute("width", svg.clientWidth * scale);
+    svg.setAttribute("height", svg.clientHeight * scale);
+    svg.setAttribute("viewBox", "0 0 " + svg.clientWidth / scale + " " + svg.clientHeight / scale );
+  });
+};
+
+//各HTML要素に記述したスクリプトを元にブロックを描画
+var titleBlocks = document.getElementById('big_blocks');
+renderBlocks(titleBlocks, titleBlocks.innerHTML, 2.0);
+
+var middleBlocks = document.getElementById('middle_blocks');
+renderBlocks(middleBlocks, middleBlocks.innerHTML, 1.5);
+
+var smallBlocks = document.getElementById('small_blocks');
+renderBlocks(smallBlocks, smallBlocks.innerHTML, 1.0);
+</script>
