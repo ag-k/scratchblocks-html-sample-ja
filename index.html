@@ -3,12 +3,38 @@
 
 <title>Scratch ブロック on HTML</title>
 
-<script src="js/scratchblocks-v3.1-min.js"></script>
-<script src="js/translations-all-v3.1-min.js" charset="utf8"></script>
-<!-- <link rel=stylesheet href="style.css"> -->
+<script src="https://scratchblocks.github.io/js/scratchblocks-3.x-min.js"></script>
+<script src="https://scratchblocks.github.io/js/translations-v3.1-min.js"></script>
 
 <h1>Scratch ブロック on HTML</h1>
 
+<h2>ベーシックな描画方法</h2>
+<p>scratchblocks.renderMatching() を使用して、CSSセレクタで指定した要素をまとめて描画します。</p>
+<pre id="blocks1" class="blocks">
+  @greenFlag がクリックされたとき
+  x座標を (0) 、y座標を (0) にする
+  ずっと
+    (10)回繰り返す
+      @turnright (10) 度回す
+      (5) 歩動かす
+    end
+    次のコスチュームにする
+  end
+</pre>
+<pre id="blocks2" class="blocks">
+  このスプライトがクリックされたとき
+  もし <(向き) = [90]> なら
+    ペンを下ろす
+  でなければ
+    ペンを上げる
+  end
+</pre>
+
+<h2>インラインで描画</h2>
+<p>scratchblocks.renderMatching() の第2引数 option に inline: true を指定すると、<code class=b>スタンプ</code>のようにインラインでブロックを描画できます。</p>
+
+<h2>サイズを拡大して描画</h2>
+<p>描画されたSVGを拡大して表示します。</p>
 <code id="big_blocks">
   @greenFlag がクリックされたとき
   x座標を (0) 、y座標を (0) にする
@@ -44,10 +70,30 @@
 </code>
 
 <script>
-// ブロックの描画用関数
-var renderBlocks = function(target, script, scale) {
-  var doc = window.doc = scratchblocks.parse(script, {
-    //'ja'に翻訳されていないブロックがあれば'en'を参照する
+
+// 'pre.blocks' セレクタで指定された要素をまとめて描画
+scratchblocks.renderMatching('pre.blocks', {
+  languages: ['ja', 'en'],
+  render: function(doc, cb) {
+    doc.render(function(svg) {
+      var el = document.createElement('div');
+      el.appendChild(svg);
+      cb(el);
+    });
+  },
+});
+
+// インラインで描画
+scratchblocks.renderMatching("code.b", {
+  languages: ['ja', 'en'],
+  inline: true
+});
+
+// スケールを変更する場合のブロック描画関数
+//   renderMatching()で呼び出される doc.render()ではSVGのサイズが取得できないため、
+//   parse() と doc.render() を使用して描画する。
+var renderScaledBlocks = function(target, scale) {
+  var doc = scratchblocks.parse(target.innerHTML, {
     languages: ['ja', 'en'],
   });
   doc.render(function(svg) {
@@ -62,11 +108,12 @@ var renderBlocks = function(target, script, scale) {
 
 //各HTML要素に記述したスクリプトを元にブロックを描画
 var titleBlocks = document.getElementById('big_blocks');
-renderBlocks(titleBlocks, titleBlocks.innerHTML, 2.0);
+renderScaledBlocks(titleBlocks, 2.0);
 
 var middleBlocks = document.getElementById('middle_blocks');
-renderBlocks(middleBlocks, middleBlocks.innerHTML, 1.5);
+renderScaledBlocks(middleBlocks, 1.5);
 
 var smallBlocks = document.getElementById('small_blocks');
-renderBlocks(smallBlocks, smallBlocks.innerHTML, 1.0);
+renderScaledBlocks(smallBlocks, 1.0);
+
 </script>
